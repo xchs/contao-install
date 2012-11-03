@@ -16,7 +16,7 @@
 	shell_exec("curl -s -L http://install.contao.org | tar -xzp");
 	
 	// Save the subfolder name of the unzip directory
-  $folder = trim(shell_exec("ls -d contao-*"));
+  $folder = trim(shell_exec("ls -d contao-[0-9]*"));
 
 	// Remove some unwanted files and folders
 	// shell_exec("rm -rf $folder/.gitignore $folder/README.md $folder/.tx");
