@@ -23,17 +23,17 @@ if (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '')
 	switch ($strBranch)
 	{
 		case 'master':
-			// Get the current "master" branch from the GitHub repository
+			// Get the current "master" branch from the GitHub repository and extract the tar archive (tarball)
 			shell_exec("curl -s -L https://github.com/contao/core/tarball/master | tar -xzp");
 			break;
 
 		case 'lts':
-			// Get the current "lts" branch from the GitHub repository
+			// Get the current "lts" branch from the GitHub repository and extract the tar archive (tarball)
 			shell_exec("curl -s -L https://github.com/contao/core/tarball/lts | tar -xzp");
 			break;
 
 		case 'develop':
-			// Get the current "develop" branch from the GitHub repository
+			// Get the current "develop" branch from the GitHub repository and extract the tar archive (tarball)
 			shell_exec("curl -s -L https://github.com/contao/core/tarball/develop | tar -xzp");
 			break;
 	}
@@ -43,7 +43,7 @@ if (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '')
 }
 else
 {
-	// Get the current stable release from SourceForge (http://sourceforge.net/projects/contao/files/latest/download)
+	// Get the current stable release from SourceForge (http://sourceforge.net/projects/contao/files/latest/download) and extract the tar archive (tarball)
 	shell_exec("curl -s -L http://install.contao.org | tar -xzp");
 
 	// Save the subfolder name of the unzip directory
@@ -52,7 +52,7 @@ else
 
 
 // Remove some unwanted files and folders
-// shell_exec("rm -rf $folder/.gitignore $folder/README.md $folder/.tx");
+// shell_exec("rm -rf $folder/.gitattributes $folder/.gitignore $folder/README.md $folder/.tx");
 
 // Move subfolder contents into current directory
 shell_exec("mv $folder/* ./");
