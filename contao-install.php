@@ -16,16 +16,16 @@
 // Check for a given URL parameter to switch between GitHub repository branches
 if (isset($argv[1]) || (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != ''))
 {
-  // Check for the first CLI argument
-  if (isset($argv[1]))
-  {
-    $strBranch = $argv[1];
-  }
-  else
-  {
-    // Sanatize for security, remove anything but 0-9,a-z,-_,
-    $strBranch = preg_replace("/[^0-9a-z\-_,]+/i", "", $_SERVER['QUERY_STRING']);
-  }
+	// Check for the first CLI argument
+	if (isset($argv[1]))
+	{
+		$strBranch = $argv[1];
+	}
+	else
+	{
+		// Sanatize for security, remove anything but 0-9,a-z,-_,
+		$strBranch = preg_replace("/[^0-9a-z\-_,]+/i", "", $_SERVER['QUERY_STRING']);
+	}
 
 	// Get the respective repository branch from GitHub
 	switch ($strBranch)
