@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 /**
@@ -63,5 +64,3 @@ shell_exec("rm contao-install.php");
 
 // Redirect to the Contao install tool
 Header("Location: contao/install.php");
-
-?>
