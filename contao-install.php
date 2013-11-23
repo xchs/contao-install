@@ -48,10 +48,10 @@ else
 // shell_exec("rm -rf $folder/.gitattributes $folder/.gitignore $folder/README.md $folder/.tx");
 
 // Move subfolder contents into current directory
-shell_exec("mv $folder/* ./");
+shell_exec("rsync -a $folder/* ./");
 
 // Make sure to move also hidden files and folders
-shell_exec("mv $folder/.[a-z]* ./");
+shell_exec("rsync -a $folder/.[a-z]* ./");
 
 // Enable the ".htaccess" file
 shell_exec("cp .htaccess.default .htaccess");
