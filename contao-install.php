@@ -6,13 +6,14 @@
  *
  * Contao Download Script
  * Gets the current stable Contao release and runs the Contao install tool
- * Gets a certain GitHub repository branch if specified as URL parameter
+ * Gets a certain GitHub repository branch if specified as (URL) parameter
  *
  * @package   Contao
  * @link      http://git.io/contao-core
  * @author    xchs <http://git.io/xchs>
- * @copyright xchs 2012
+ * @copyright xchs 2014
  */
+
 
 // Check for a given URL parameter to switch between GitHub repository branches
 if (isset($argv[1]) || (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != ''))
@@ -28,39 +29,64 @@ if (isset($argv[1]) || (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRIN
 		$strBranch = preg_replace("/[^0-9a-z\-_,.\/]+/i", "", $_SERVER['QUERY_STRING']);
 	}
 
-	// Get the respective repository branch from GitHub
-	shell_exec("curl -s -L https://github.com/contao/core/tarball/" . $strBranch . " | tar -xzp");
-
-	// Save the subfolder name of the unzip directory
-	$folder = trim(shell_exec("ls -d contao-core-*"));
+	// Get the repository branch from GitHub
+	shell_exec("curl -s -L https://github.com/contao/core/tarball/" . $strBranch . " > download.tar.gz");
 }
 else
 {
-	// Get the current stable release from SourceForge (http://sourceforge.net/projects/contao/files/latest/download) and extract the tar archive (tarball)
-	shell_exec("curl -s -L http://install.contao.org | tar -xzp");
-
-	// Save the subfolder name of the unzip directory
-	$folder = trim(shell_exec("ls -d contao-[0-9]*"));
+	// Get the current stable release from GitHub
+	shell_exec("curl -s -L http://download.contao.org > download.tar.gz");
 }
 
 
-// Remove some unwanted files and folders
-// shell_exec("rm -rf $folder/.gitattributes $folder/.gitignore $folder/README.md $folder/.tx");
+// Check if the download file exists and if it is greater than 1 MB
+if (file_exists('download.tar.gz') && filesize('download.tar.gz') > 1048576)
+{
+	// Extract the download archive
+	shell_exec("tar -xzpf download.tar.gz");
 
-// Move subfolder contents into current directory
-shell_exec("rsync -a $folder/* ./");
+	// Save the subfolder name of the unzip directory
+	$folder = trim(shell_exec("ls -d *core-*"));
 
-// Make sure to move also hidden files and folders
-shell_exec("rsync -a $folder/.[a-z]* ./");
+  // Check if there has been saved the unzip folder name
+  if (!empty($folder))
+  {
+    // Remove some unwanted files and folders
+    // shell_exec("rm -rf $folder/.gitattributes $folder/.gitignore $folder/README.md $folder/.tx");
 
-// Enable the ".htaccess" file
-shell_exec("cp .htaccess.default .htaccess");
+    // Move subfolder contents into current directory
+    shell_exec("rsync -a $folder/* ./");
 
-// Remove the unzip directory
-shell_exec("rm -rf $folder");
+    // Make sure to move also hidden files and folders
+    shell_exec("rsync -a $folder/.[a-z]* ./");
 
-// Remove the download script
-shell_exec("rm contao-install.php");
+    // Enable the ".htaccess" file
+    shell_exec("cp .htaccess.default .htaccess");
 
-// Redirect to the Contao install tool
-Header("Location: contao/install.php");
+    // Remove the unzip directory
+    shell_exec("rm -rf $folder");
+
+    // Remove the download archive
+    shell_exec("rm download.tar.gz");
+
+    // Remove the download script
+    shell_exec("rm contao-install.php");
+
+    // Redirect to the Contao install tool
+    Header("Location: contao/install.php");
+  }
+  else
+  {
+    die("\n   WARNING: Unzip directory not found or wrong folder name!\n\n");
+  }
+}
+else
+{
+  if (file_exists('download.tar.gz'))
+  {
+    // Remove the download archive
+    shell_exec("rm download.tar.gz");
+  }
+    
+  die("\n   WARNING: Download file not found or uncomplete. Check for the right GitHub repository branch name!\n\n");
+}
